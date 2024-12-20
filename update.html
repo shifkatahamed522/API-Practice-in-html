@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax Practice</title>
+    <link rel="stylesheet" href="css/milligram.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+</head>
+<body>
+    <div id="loader" class="loading d-none">
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+          <div class="column">
+            <div class="modal-header">
+              <a href="index.html" class="button" data-bs-dismiss="modal" aria-label="Close">Back</a>
+            </div>
+            
+            <label>Product Name</label>
+            <input id="product_name" type="text">
+            <label>Product Code</label>
+            <input id="product_code" type="text">
+            <label>Unit Price</label>
+            <input id="unit_price" type="text">
+            <label>Product Qty</label>
+            <input id="qty" type="text">
+            <label>Product Total</label>
+            <input id="total_price" type="text">
+            <button onclick="UpdateData()">Submit</button>
+          </div>
+        </div>
+      </div>
+  
+    
+
+
+
+    <script src="js/axios.min.js"></script>
+    <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+
+        fillExistingData();
+        async function fillExistingData(){
+
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            let URL= `http://127.0.0.1:8000/api/getsingle/myapi/${id}`;
+            let res=await axios.get(URL);
+            let data=res.data;
+            document.getElementById('product_name').value=data['product_name']
+            document.getElementById('product_code').value=data['product_code']
+            document.getElementById('unit_price').value=data['unit_price']
+            document.getElementById('qty').value=data['qty']
+            document.getElementById('total_price').value=data['total_price']
+              
+            } catch (error) {
+              alert(error)
+            }
+        }
+
+        async function UpdateData(){
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const ProductID = urlParams.get('id');
+            let ProductName=document.getElementById('product_name').value;
+            let ProductCode=document.getElementById('product_code').value;
+            let UnitPrice=document.getElementById('unit_price').value;
+            let ProductQty=document.getElementById('qty').value;
+            let ProductTotal= document.getElementById('total_price').value;
+
+            let obj={
+            "product_name":ProductName,
+            "product_code":ProductCode,
+            "unit_price":UnitPrice,
+            "qty":ProductQty,
+            "total_price":ProductTotal,
+            
+        }
+
+        let URL=`http://127.0.0.1:8000/api/myapi/${ProductID}`
+        let res=await axios.put(URL,obj)
+        window.location="index.html";
+
+
+        }
+
+
+    </script>
+
+
+
+
+</body>
+</html>

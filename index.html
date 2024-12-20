@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax Practice</title>
+    <link rel="stylesheet" href="css/milligram.css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+</head>
+<body>
+    <div id="loader" class="loading d-none">
+    </div>
+
+    <div class="container">
+        <div class="row">
+          <a href="create.html" class="button button-outline float-left">Create New</a>
+        </div>
+      </div>
+    
+    <div class="container">
+        <div class="row">
+            <table>
+                <thead>
+                    <tr>
+                    <th>Product Name</th>
+                    <th>Product Code</th>
+                    <th>Unit Price</th>
+                    <th>Qty</th>
+                    <th>Total Price</th>
+                    <th>Delete</th>
+                    <th>Update</th>
+                    </tr>
+                </thead>
+
+                <tbody id="itemList">
+        
+                  <!---Ajax Data Bind--->
+
+                  <!-- Demo data insert-->
+                <!-- <link rel="stylesheet" href="https://crud.teamrabbil.com/create"> -->
+                  
+        
+                </tbody>
+              </table>
+        </div>
+
+    </div>
+    
+
+
+
+    <script src="js/axios.min.js"></script>
+    <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+
+        //Data Read
+        async function getList(){
+            let URL="http://127.0.0.1:8000/api/myapi"
+            let res=await axios.get(URL)       
+            let data=res.data['data']
+            //let data=res.data
+            data.forEach((item)=>{
+                document.getElementById('itemList').innerHTML+=(`
+                    <tr>
+                        <td>${item['product_name']}</td>
+                        <td>${item['product_code']}</td>
+                        <td>${item['unit_price']}</td>
+                        <td>${item['qty']}</td>
+                        <td>${item['total_price']}</td>
+                        <td><button onclick="deleteItem('${item['id']}')">Detele</button></td>
+                        <td><button onclick="goUpdatePage('${item['id']}')">Update</button></td>
+                    </tr>
+                `)
+            })
+        }
+        getList();
+
+
+         // Data Delete
+         async function deleteItem(id){
+            let URL=`http://127.0.0.1:8000/api/myapi/${id}`
+            let res=await axios.delete(URL)
+            document.getElementById('itemList').innerHTML=""
+            await getList();
+         }
+
+
+         function goUpdatePage(id){
+            window.location=`update.html?id=${id}`
+         }
+
+
+    </script>
+</body>
+</html>
